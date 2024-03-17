@@ -24,6 +24,7 @@ const main = async () => {
     const recursionFlag = recursion === 'true' ? true : false;
 
     const files = await getFilesAfterFilter(process.cwd(), patternReg, recursionFlag);
+    console.log("files", files);
     
     files.forEach(async (file) => {
         const fileType = getFileType(file);

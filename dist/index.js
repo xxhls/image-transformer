@@ -7,7 +7,7 @@ import $hgUW1$jimp from "jimp";
 
 
 var $df64573ef6d51081$exports = {};
-$df64573ef6d51081$exports = JSON.parse('{"name":"@xxhls/image-transformer","version":"1.0.0","description":"","source":"src/index.ts","main":"dist/index.js","type":"module","types":"dist/index.d.ts","scripts":{"test":"echo \\"Error: no test specified\\" && exit 1","build":"pnpm run clear && parcel build && pnpm run insert","clear":"node bin/clearDist.js","insert":"node bin/addComment.js"},"bin":{"img-t":"dist/index.js"},"keywords":[],"author":"","license":"ISC","dependencies":{"chalk":"^5.3.0","commander":"^12.0.0","fs-extra":"^11.2.0","jimp":"^0.22.12"},"devDependencies":{"@parcel/packager-ts":"2.12.0","@parcel/transformer-typescript-types":"2.12.0","@types/commander":"^2.12.2","@types/fs-extra":"^11.0.4","@types/node":"^20.11.28","buffer":"^5.5.0||^6.0.0","events":"^3.1.0","parcel":"^2.12.0","path-browserify":"^1.0.0","process":"^0.11.10","ts-node":"^10.9.2","typescript":"^5.4.2"}}');
+$df64573ef6d51081$exports = JSON.parse('{"name":"@xxhls/image-transformer","version":"1.0.0","description":"","source":"src/index.ts","main":"dist/index.js","type":"module","types":"dist/index.d.ts","private":false,"scripts":{"test":"echo \\"Error: no test specified\\" && exit 1","build":"pnpm run clear && parcel build && pnpm run insert","clear":"node bin/clearDist.js","insert":"node bin/addComment.js"},"bin":{"img-t":"dist/index.js"},"keywords":[],"author":"","license":"ISC","dependencies":{"chalk":"^5.3.0","commander":"^12.0.0","fs-extra":"^11.2.0","jimp":"^0.22.12"},"devDependencies":{"@parcel/packager-ts":"2.12.0","@parcel/transformer-typescript-types":"2.12.0","@types/commander":"^2.12.2","@types/fs-extra":"^11.0.4","@types/node":"^20.11.28","buffer":"^5.5.0||^6.0.0","events":"^3.1.0","parcel":"^2.12.0","path-browserify":"^1.0.0","process":"^0.11.10","ts-node":"^10.9.2","typescript":"^5.4.2"}}');
 
 
 
@@ -94,6 +94,7 @@ const $149c1bd638913645$var$main = async ()=>{
     const patternReg = new RegExp(pattern);
     const recursionFlag = recursion === "true" ? true : false;
     const files = await (0, $87c593608833b4ae$export$2e2bcd8739ae039)($hgUW1$cwd(), patternReg, recursionFlag);
+    console.log("files", files);
     files.forEach(async (file)=>{
         const fileType = (0, $fb32508177e497d5$export$2e2bcd8739ae039)(file);
         if (fileType === options.target) return;
