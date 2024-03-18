@@ -8,7 +8,7 @@ import $hgUW1$jimp from "jimp";
 
 
 var $df64573ef6d51081$exports = {};
-$df64573ef6d51081$exports = JSON.parse('{"name":"@xxhls/image-transformer","version":"1.1.0","description":"","source":"src/index.ts","main":"dist/index.js","type":"module","types":"dist/index.d.ts","private":false,"scripts":{"test":"echo \\"Error: no test specified\\" && exit 1","build":"pnpm run clear && parcel build && pnpm run insert","clear":"node bin/clearDist.js","insert":"node bin/addComment.js","npm:publish":"pnpm run build && npm publish --access public"},"bin":{"img-t":"dist/index.js"},"keywords":[],"author":"","license":"ISC","dependencies":{"chalk":"^5.3.0","commander":"^12.0.0","fs-extra":"^11.2.0","jimp":"^0.22.12"},"devDependencies":{"@parcel/packager-ts":"2.12.0","@parcel/transformer-typescript-types":"2.12.0","@types/commander":"^2.12.2","@types/fs-extra":"^11.0.4","@types/node":"^20.11.28","buffer":"^5.5.0||^6.0.0","events":"^3.1.0","parcel":"^2.12.0","path-browserify":"^1.0.0","process":"^0.11.10","ts-node":"^10.9.2","typescript":"^5.4.2"}}');
+$df64573ef6d51081$exports = JSON.parse('{"name":"@xxhls/image-transformer","version":"1.1.2","description":"A tool to modify the format of an image from the command line","keywords":["image","transformer","cli","nodejs","typescript","parcel"],"homepage":"https://github.com/xxhls/image-transformer","bugs":{"url":"https://github.com/xxhls/image-transformer/issues","email":"heyq020814@qq.com"},"license":"MIT","source":"src/index.ts","main":"dist/index.js","type":"module","types":"dist/index.d.ts","private":false,"bin":{"img-t":"dist/index.js"},"repository":{"type":"git","url":"https://github.com/xxhls/image-transformer"},"scripts":{"test":"echo \\"Error: no test specified\\" && exit 1","build":"pnpm run clear && parcel build && pnpm run insert","clear":"node bin/clearDist.js","insert":"node bin/addComment.js","npm:publish":"pnpm run build && npm publish --access public","local-check":"wkstd local-check","prepare":"husky install","commit":"cz"},"author":"xxhls <heyq020814@qq.com>","dependencies":{"chalk":"^5.3.0","commander":"^12.0.0","fs-extra":"^11.2.0","jimp":"^0.22.12","pdf-lib":"^1.17.1","pdf2pic":"^3.1.1","sharp":"^0.33.2"},"devDependencies":{"@parcel/packager-ts":"2.12.0","@parcel/transformer-typescript-types":"2.12.0","@types/commander":"^2.12.2","@types/fs-extra":"^11.0.4","@types/node":"^20.11.28","buffer":"^5.5.0||^6.0.0","commitizen":"^4.3.0","cz-conventional-changelog":"^3.3.0","cz-emoji":"1.3.2-canary.2","eslint":"8.0.0","eslint-config-wkts":"^0.2.4","events":"^3.1.0","husky":"^9.0.11","parcel":"^2.12.0","path-browserify":"^1.0.0","prettier":"^3.2.5","prettier-config-wk":"^0.2.4","process":"^0.11.10","ts-node":"^10.9.2","typescript":"^5.4.2","vitepress":"1.0.0-rc.45","wkstd":"^0.2.4"},"prettier":"prettier-config-wk","config":{"commitizen":{"path":"cz-emoji"}}}');
 
 
 
@@ -120,15 +120,15 @@ const $149c1bd638913645$var$main = async ()=>{
     program.name((0, $df64573ef6d51081$exports.name)).version((0, $df64573ef6d51081$exports.version)).description((0, $df64573ef6d51081$exports.description)).requiredOption("--name <_name>", "the name of the file, which can be a regular expression").requiredOption("--target <_target>", "the converted target format").option("--path <_path>", "the path of the file, the default is the current directory", $hgUW1$cwd()).option("--recursion <_recursion>", "whether to recursion or not, the default is false", "false").parse($hgUW1$argv);
     const options = program.opts();
     /**
-     * @type {string} _name 文件名
-     * @type {string} _target 目标格式
-     * @type {string} _path 文件路径
-     * @type {string} _recursion 是否递归
-     */ const { name: _name, target: _target, path: _path, recursion: _recursion } = options;
+   * @type {string} _name 文件名
+   * @type {string} _target 目标格式
+   * @type {string} _path 文件路径
+   * @type {string} _recursion 是否递归
+   */ const { name: _name, target: _target, path: _path, recursion: _recursion } = options;
     // 预览参数
     (0, $13168db1829b0fee$export$a80b3bd66acc52ff)(`name: ${_name}, target: ${_target}, path: ${_path}, recursion: ${_recursion}`);
     // 获取所有文件
-    const files = await (0, $1322af845bb6b9fd$export$89627d0c99cb1996)(await (0, $3d5f0f54962d6611$export$54cf0fce7b972b70)(_path, _recursion === "true" ? true : false));
+    const files = await (0, $1322af845bb6b9fd$export$89627d0c99cb1996)(await (0, $3d5f0f54962d6611$export$54cf0fce7b972b70)(_path, _recursion === "true"));
     (0, $13168db1829b0fee$export$a80b3bd66acc52ff)(`Find ${files.length} files`);
     files.forEach((file)=>{
         (0, $13168db1829b0fee$export$1c9f709888824e05)(file);
@@ -153,6 +153,10 @@ const $149c1bd638913645$var$main = async ()=>{
     (0, $13168db1829b0fee$export$a80b3bd66acc52ff)(`Start converting files`);
     filterFiles.forEach(async (file)=>{
         const ext = (0, $b8719bb8939b5d7d$export$5f7821c344028c56)(file);
+        if (ext === _target) {
+            (0, $13168db1829b0fee$export$c106dd0671a0fc2d)(`The target format is the same as the original format: ${_target}`);
+            return;
+        }
         const transformer = (0, $b303505768f2368e$export$2e2bcd8739ae039).get(ext);
         await transformer(file, _target);
         finished++;
