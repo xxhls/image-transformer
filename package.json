@@ -1,6 +1,6 @@
 {
   "name": "@xxhls/image-transformer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "source": "src/index.ts",
   "main": "dist/index.js",
@@ -11,7 +11,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "pnpm run clear && parcel build && pnpm run insert",
     "clear": "node bin/clearDist.js",
-    "insert": "node bin/addComment.js"
+    "insert": "node bin/addComment.js",
+    "npm:publish": "pnpm run build && npm publish --access public"
   },
   "bin": {
     "img-t": "dist/index.js"
