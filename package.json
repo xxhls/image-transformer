@@ -1,6 +1,6 @@
 {
   "name": "@xxhls/image-transformer",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "A tool to modify the format of an image from the command line",
   "keywords": [
     "image",
