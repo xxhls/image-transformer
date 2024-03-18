@@ -18,3 +18,7 @@ CHANGELOG.md
 pnpm-lock.yaml
 README-zh.md
 tsconfig.json
+
+*.jpeg
+*.png
+*.tiff
