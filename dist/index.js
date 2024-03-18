@@ -39,7 +39,6 @@ const $1322af845bb6b9fd$export$89627d0c99cb1996 = async (dirs)=>{
 const $b7a65e68252004f2$export$d3156cc1d0cfdd9c = (files, name)=>{
     const patternReg = new RegExp(name);
     return files.filter((file)=>{
-        console.log((0, $hgUW1$path).basename(file));
         return patternReg.test((0, $hgUW1$path).basename(file));
     });
 };
