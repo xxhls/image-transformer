@@ -22,3 +22,4 @@ tsconfig.json
 *.jpeg
 *.png
 *.tiff
+*.bmp
