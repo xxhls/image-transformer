@@ -1,8 +1,9 @@
 #! /usr/bin/env node
-import {argv as $hgUW1$argv, cwd as $hgUW1$cwd} from "process";
+import {cwd as $hgUW1$cwd, argv as $hgUW1$argv, exit as $hgUW1$exit} from "process";
 import {Command as $hgUW1$Command} from "commander";
 import $hgUW1$fsextra from "fs-extra";
 import $hgUW1$path from "path";
+import $hgUW1$chalk from "chalk";
 import $hgUW1$jimp from "jimp";
 
 
@@ -11,99 +12,155 @@ $df64573ef6d51081$exports = JSON.parse('{"name":"@xxhls/image-transformer","vers
 
 
 
-const $87c593608833b4ae$var$getFilesR = async (dir)=>{
-    const files = await (0, $hgUW1$fsextra).readdir(dir);
-    const result = [];
-    for (const file of files){
-        const filePath = `${dir}/${file}`;
-        const stat = await (0, $hgUW1$fsextra).stat(filePath);
-        if (stat.isDirectory()) {
-            const subFiles = await $87c593608833b4ae$var$getFilesR(filePath);
-            result.push(...subFiles);
-        } else result.push(filePath);
+const $3d5f0f54962d6611$export$54cf0fce7b972b70 = async (dir, recursionFlag)=>{
+    const dirents = await (0, $hgUW1$fsextra).readdir(dir, {
+        withFileTypes: true
+    });
+    const files = await Promise.all(dirents.map((dirent)=>{
+        const res = `${dir}/${dirent.name}`;
+        return dirent.isDirectory() && recursionFlag ? $3d5f0f54962d6611$export$54cf0fce7b972b70(res, recursionFlag) : res;
+    }));
+    return Array.prototype.concat(...files);
+};
+
+
+
+const $1322af845bb6b9fd$export$89627d0c99cb1996 = async (dirs)=>{
+    const files = [];
+    for (const dir of dirs){
+        const state = (0, $hgUW1$fsextra).lstatSync(dir);
+        if (!state.isDirectory()) files.push(dir);
     }
-    return result;
+    return files;
 };
-const $87c593608833b4ae$var$getFiles = async (dir)=>{
-    const files = await (0, $hgUW1$fsextra).readdir(dir);
-    const result = [];
-    for (const file of files){
-        const filePath = `${dir}/${file}`;
-        const stat = await (0, $hgUW1$fsextra).stat(filePath);
-        if (stat.isDirectory()) continue;
-        result.push(filePath);
-    }
-    return result;
+
+
+
+const $b7a65e68252004f2$export$d3156cc1d0cfdd9c = (files, name)=>{
+    const patternReg = new RegExp(name);
+    return files.filter((file)=>{
+        console.log((0, $hgUW1$path).basename(file));
+        return patternReg.test((0, $hgUW1$path).basename(file));
+    });
 };
-const $87c593608833b4ae$var$getFilesAfterFilter = async (dir, filter, recursionFlag)=>{
-    const files = await (recursionFlag ? $87c593608833b4ae$var$getFilesR(dir) : $87c593608833b4ae$var$getFiles(dir));
-    return files.filter((file)=>filter.test(file)).map((file)=>file.replace(/\\/g, "/"));
+
+
+
+/**
+ * 获取文件拓展名
+ * @param file 文件路径
+ * @returns 拓展名
+ */ const $b8719bb8939b5d7d$export$5f7821c344028c56 = (file)=>{
+    return (0, $hgUW1$path).extname(file).slice(1);
 };
-var $87c593608833b4ae$export$2e2bcd8739ae039 = $87c593608833b4ae$var$getFilesAfterFilter;
 
 
 
-const $fb32508177e497d5$var$getFileType = (filePath)=>{
-    const ext = (0, $hgUW1$path).extname(filePath);
-    return ext.slice(1);
+const $13168db1829b0fee$export$a80b3bd66acc52ff = (message)=>{
+    console.log((0, $hgUW1$chalk).white.bgGray.bold(" INFO  	"), (0, $hgUW1$chalk).gray(message));
 };
-var $fb32508177e497d5$export$2e2bcd8739ae039 = $fb32508177e497d5$var$getFileType;
+const $13168db1829b0fee$export$1c9f709888824e05 = (message)=>{
+    console.log((0, $hgUW1$chalk).white.bgBlue.bold(" DEBUG 	"), (0, $hgUW1$chalk).blue(message));
+};
+const $13168db1829b0fee$export$c106dd0671a0fc2d = (message)=>{
+    console.log((0, $hgUW1$chalk).white.bgYellow.bold(" WARN  	"), (0, $hgUW1$chalk).yellow(message));
+};
+const $13168db1829b0fee$export$a3bc9b8ed74fc = (message)=>{
+    console.log((0, $hgUW1$chalk).white.bgRed.bold(" ERROR 	"), (0, $hgUW1$chalk).red(message));
+};
 
 
 
-const $b303505768f2368e$var$transformer = async (filePath, target)=>{
+
+
+const $e4d2b7dd3fbcf7ae$var$transformer_jpeg_jpg_png_bmp_tiff_gif = async (filePath, target)=>{
     const image = await (0, $hgUW1$jimp).read(filePath);
     const outputPath = filePath.replace(/\.\w+$/, `.${target}`);
+    if ((0, $hgUW1$fsextra).existsSync(outputPath)) {
+        (0, $13168db1829b0fee$export$c106dd0671a0fc2d)(`File already exists: ${outputPath}, and it will be overwritten`);
+        (0, $hgUW1$fsextra).removeSync(outputPath);
+    }
     await image.writeAsync(outputPath);
 };
+var $e4d2b7dd3fbcf7ae$export$2e2bcd8739ae039 = $e4d2b7dd3fbcf7ae$var$transformer_jpeg_jpg_png_bmp_tiff_gif;
+
+
 const $b303505768f2368e$var$transformerMap = new Map([
     [
         "jpg",
-        $b303505768f2368e$var$transformer
+        (0, $e4d2b7dd3fbcf7ae$export$2e2bcd8739ae039)
     ],
     [
         "jpeg",
-        $b303505768f2368e$var$transformer
+        (0, $e4d2b7dd3fbcf7ae$export$2e2bcd8739ae039)
     ],
     [
         "png",
-        $b303505768f2368e$var$transformer
+        (0, $e4d2b7dd3fbcf7ae$export$2e2bcd8739ae039)
     ],
     [
         "bmp",
-        $b303505768f2368e$var$transformer
+        (0, $e4d2b7dd3fbcf7ae$export$2e2bcd8739ae039)
     ],
     [
         "tiff",
-        $b303505768f2368e$var$transformer
+        (0, $e4d2b7dd3fbcf7ae$export$2e2bcd8739ae039)
     ],
     [
         "gif",
-        $b303505768f2368e$var$transformer
+        (0, $e4d2b7dd3fbcf7ae$export$2e2bcd8739ae039)
     ]
 ]);
 var $b303505768f2368e$export$2e2bcd8739ae039 = $b303505768f2368e$var$transformerMap;
 
 
 
+// 主函数
 const $149c1bd638913645$var$main = async ()=>{
     const program = new (0, $hgUW1$Command)();
-    program.name((0, $df64573ef6d51081$exports.name)).version((0, $df64573ef6d51081$exports.version)).description((0, $df64573ef6d51081$exports.description)).requiredOption("--name <pattern>", "the name of the file, which can be a regular expression").requiredOption("--target <target>", "the converted target format").option("--recursion <recursion>", "whether to recursion or not, the default is false", "false").parse($hgUW1$argv);
+    program.name((0, $df64573ef6d51081$exports.name)).version((0, $df64573ef6d51081$exports.version)).description((0, $df64573ef6d51081$exports.description)).requiredOption("--name <_name>", "the name of the file, which can be a regular expression").requiredOption("--target <_target>", "the converted target format").option("--path <_path>", "the path of the file, the default is the current directory", $hgUW1$cwd()).option("--recursion <_recursion>", "whether to recursion or not, the default is false", "false").parse($hgUW1$argv);
     const options = program.opts();
-    const { name: pattern, recursion: recursion } = options;
-    const patternReg = new RegExp(pattern);
-    const recursionFlag = recursion === "true" ? true : false;
-    const files = await (0, $87c593608833b4ae$export$2e2bcd8739ae039)($hgUW1$cwd(), patternReg, recursionFlag);
-    console.log("files", files);
-    files.forEach(async (file)=>{
-        const fileType = (0, $fb32508177e497d5$export$2e2bcd8739ae039)(file);
-        if (fileType === options.target) return;
-        const transformer = (0, $b303505768f2368e$export$2e2bcd8739ae039).get(fileType);
-        if (!transformer) {
-            console.log(`Unsupported file type: ${fileType}`);
-            return;
+    /**
+     * @type {string} _name 文件名
+     * @type {string} _target 目标格式
+     * @type {string} _path 文件路径
+     * @type {string} _recursion 是否递归
+     */ const { name: _name, target: _target, path: _path, recursion: _recursion } = options;
+    // 预览参数
+    (0, $13168db1829b0fee$export$a80b3bd66acc52ff)(`name: ${_name}, target: ${_target}, path: ${_path}, recursion: ${_recursion}`);
+    // 获取所有文件
+    const files = await (0, $1322af845bb6b9fd$export$89627d0c99cb1996)(await (0, $3d5f0f54962d6611$export$54cf0fce7b972b70)(_path, _recursion === "true" ? true : false));
+    (0, $13168db1829b0fee$export$a80b3bd66acc52ff)(`Find ${files.length} files`);
+    files.forEach((file)=>{
+        (0, $13168db1829b0fee$export$1c9f709888824e05)(file);
+    });
+    // 过滤文件
+    const filterFiles = (0, $b7a65e68252004f2$export$d3156cc1d0cfdd9c)(files, _name);
+    (0, $13168db1829b0fee$export$a80b3bd66acc52ff)(`Find ${filterFiles.length} files after filter`);
+    filterFiles.forEach((file)=>{
+        (0, $13168db1829b0fee$export$1c9f709888824e05)(file);
+    });
+    // 检测文件类型
+    const supportedTypes = Array.from((0, $b303505768f2368e$export$2e2bcd8739ae039).keys());
+    filterFiles.forEach((file)=>{
+        const ext = (0, $b8719bb8939b5d7d$export$5f7821c344028c56)(file);
+        if (!supportedTypes.includes(ext)) {
+            (0, $13168db1829b0fee$export$c106dd0671a0fc2d)(`Unsupported file type: ${ext}`);
+            $hgUW1$exit(1);
         }
-        await transformer(file, options.target);
+    });
+    let finished = 0;
+    // 转换文件
+    (0, $13168db1829b0fee$export$a80b3bd66acc52ff)(`Start converting files`);
+    filterFiles.forEach(async (file)=>{
+        const ext = (0, $b8719bb8939b5d7d$export$5f7821c344028c56)(file);
+        const transformer = (0, $b303505768f2368e$export$2e2bcd8739ae039).get(ext);
+        await transformer(file, _target);
+        finished++;
+        if (finished === filterFiles.length) {
+            (0, $13168db1829b0fee$export$a80b3bd66acc52ff)(`Converted ${finished} files`);
+            (0, $13168db1829b0fee$export$a80b3bd66acc52ff)("All files have been converted");
+        } else (0, $13168db1829b0fee$export$a80b3bd66acc52ff)(`Converted ${finished} files`);
     });
 };
 $149c1bd638913645$var$main();

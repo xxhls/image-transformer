@@ -1,21 +1,14 @@
-import Jimp from "jimp";
+import transformer_jpeg_jpg_png_bmp_tiff_gif from "./JPEG_JPG_PNG_BMP_TIFF_GIF";
 
-const transformer = async (filePath: string, target: string) => {
-    const image = await Jimp.read(filePath);
-    const outputPath = filePath.replace(/\.\w+$/, `.${target}`);
-    await image.writeAsync(outputPath);
-};
+type Transformer = (filePath: string, target: string) => Promise<void>;
 
-const transformerMap = new Map<string, typeof transformer>([
-    ["jpg", transformer],
-    ["jpeg", transformer],
-    ["png", transformer],
-    ["bmp", transformer],
-    ["tiff", transformer],
-    ["gif", transformer],
-    // ["webp", transformer],
-    // ["avif", transformer],
-    // ["jxl", transformer],
+const transformerMap = new Map<string, Transformer>([
+    ["jpg", transformer_jpeg_jpg_png_bmp_tiff_gif],
+    ["jpeg", transformer_jpeg_jpg_png_bmp_tiff_gif],
+    ["png", transformer_jpeg_jpg_png_bmp_tiff_gif],
+    ["bmp", transformer_jpeg_jpg_png_bmp_tiff_gif],
+    ["tiff", transformer_jpeg_jpg_png_bmp_tiff_gif],
+    ["gif", transformer_jpeg_jpg_png_bmp_tiff_gif],
 ]);
 
 export default transformerMap;
